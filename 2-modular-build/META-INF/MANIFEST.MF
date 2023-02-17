@@ -1,0 +1,1 @@
+Main-Class: bts.modularbuild.Main
