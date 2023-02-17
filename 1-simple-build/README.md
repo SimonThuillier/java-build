@@ -5,6 +5,9 @@ A **java** file contains Java code.
 A Java file is compiled by jdk to produce a **class** file that can be loaded by the JVM. 
 A **Jar** file is a zip archive of other files, most likely class files.
 
+The process overview will see is then : 
+    **.java files** --- *build* --> **.class files** --- *packaging* --> **.jar file** => *run*
+
 # 1 - what intellij does
 `/usr/lib/jvm/java-1.17.0-openjdk-amd64/bin/java \
 -javaagent:/home/simon/.local/share/JetBrains/Toolbox/apps/IDEA-U/ch-0/223.7571.182/lib/idea_rt.jar=42573:/home/simon/.local/share/JetBrains/Toolbox/apps/IDEA-U/ch-0/223.7571.182/bin \
@@ -21,6 +24,14 @@ this command structure is :
 - classpath : Classpath in Java is the path to the directory or list of the directory which is used by ClassLoaders to find and load classes in the Java program. Classpath can be specified using CLASSPATH environment variable which is case insensitive, -cp or -classpath command-line option or Class-Path attribute in manifest.mf file of the JAR file.
 
 the javaagent is important, that's it who command target directory for classes compilation.
+
+# 1-B CLI javac alternative for compiling classes
+You can get an equal result to intellij agent build using your jdk javac CLI tool. 
+For big modules with packages/subdirectories it is better to get a list of all java files nested inside our module and use it as argument for javac.
+see https://www.baeldung.com/javac-compile-classes-directory
+
+In our example execute the following command :
+`cd 1-simple-build/src && find . -type f -name "*.java" > javasources.txt && javac -d ../../out/production/1-simple-build @javasources.txt`
 
 # 2 - package the out classes as a jar and run it
 intellij stores the compiled classes in a subdirectory of the out folder.
@@ -41,6 +52,12 @@ The only one I was able to make work is :
 - run it again. Now that the MANIFEST file is included  and specify the Main-Class it works. 
 
 tip : use `jar tf 1-simple-build.jar` to list the content of our jar file.
+
+# whole build-package-run CLI command
+to execute since project root.
+
+`cd 1-simple-build/src && find . -type f -name "*.java" > javasources.txt && javac -d ../../out/production/1-simple-build @javasources.txt \
+&& cd ../.. && jar cvfm 1-simple-build.jar 1-simple-build/META-INF/MANIFEST.MF -C out/production/1-simple-build . && java -jar 1-simple-build.jar`
 
 
 
