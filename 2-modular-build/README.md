@@ -1,12 +1,6 @@
 # build of two modules using vanilla java tools
 
-# 1 - what intellij does
-
-Always using the intellij agent all classes throughout all necessary modules are well compiled
-
-More about custom java agents : https://www.baeldung.com/java-instrumentation
-
-# 2 - package the out classes as a jar and run it
+# 1 - package the out classes as a jar and run it
 
 Let's try to package the out classes as a jar and run it. We will include the manifest file right now so that java knows which class is the entrypoint of the program.
 `jar cvfm 2-modular-build.jar 2-modular-build/META-INF/MANIFEST.MF -C out/production/2-modular-build .`
@@ -20,7 +14,7 @@ at Main.main(Main.java:5)`
 it's because we included only out/production/2-modular-build classes in our jar. 
 We need to include the out/production/common classes too. However, we should treat it as a dependency. 
 
-## The not embedded way with classpath
+## 2 - The not embedded way with classpath
 
 First then we have to package a jar for the common module. After compiling it to classes with intellij, we can do that with the following command :
 `jar cvf common.jar -C out/production/common .`
@@ -34,7 +28,7 @@ This would cause the runtime ClassLoader not to find it and produce again the No
 
 For this reason it can be better to embed the dependency in the jar with the following method.
 
-## The embedded way
+## 3 - The embedded way
 
 remove the `Class-Path` line from the manifest file and repackage it. the Class-Path default value being . which is the directory specified by -C option (out/production/common) in the above.
 
@@ -62,6 +56,6 @@ Creating and updating the jar was a good way to learn but it much more efficient
 
 *According to use cases you may want to use either the not embedded way, particularly if a dependency module is widely used, or the embedded way !*
 
-## more about manifest files
-https://docs.oracle.com/javase/tutorial/deployment/jar/index.html
-https://www.baeldung.com/java-jar-manifest
+## 4 - more about manifest files
+- https://docs.oracle.com/javase/tutorial/deployment/jar/index.html
+- https://www.baeldung.com/java-jar-manifest

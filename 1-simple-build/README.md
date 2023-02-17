@@ -5,7 +5,7 @@ A **java** file contains Java code.
 A Java file is compiled by jdk to produce a **class** file that can be loaded by the JVM. 
 A **Jar** file is a zip archive of other files, most likely class files.
 
-The process overview will see is then : 
+The process overview we'll see is then : 
     **.java files** --- *build* --> **.class files** --- *packaging* --> **.jar file** => *run*
 
 # 1 - what intellij does
@@ -21,7 +21,7 @@ this command structure is :
 -classpath <classpath> <main class>`
 
 - javagent : Provides services that allow Java programming language agents to instrument programs running on the JVM. The mechanism for instrumentation is modification of the byte-codes of methods, see **java.lang.instrument**.
-- classpath : Classpath in Java is the path to the directory or list of the directory which is used by ClassLoaders to find and load classes in the Java program. Classpath can be specified using CLASSPATH environment variable which is case insensitive, -cp or -classpath command-line option or Class-Path attribute in manifest.mf file of the JAR file.
+- classpath : Classpath in Java is the path to the directory or list of the directory which is used by ClassLoaders to find and load classes in the Java program. Classpath can be specified using CLASSPATH environment variable which is case-insensitive, -cp or -classpath command-line option or Class-Path attribute in manifest.mf file of the JAR file.
 
 the javaagent is important, that's it who command target directory for classes compilation.
 
