@@ -11,5 +11,6 @@ I'm not an expert myself, but I'm trying to learn and share it. Please star it i
 - [2: simple build of main module and dependencies](./2-modular-build/README.md)
 - [3: simple build with maven](./3-quickstart-maven/README.md)
 - [4: build a maven module with dependencies](./4-maven-with-dep/README.md)
+- [5: build a spring boot picocli app with maven](./5-quickstart-spring/README.md)
 
 
