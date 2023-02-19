@@ -1,4 +1,4 @@
-package bts.quickstartmaven;
+package com.bts.quickstartmaven;
 
 /**
  * Hello world!

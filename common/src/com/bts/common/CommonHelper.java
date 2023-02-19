@@ -1,4 +1,4 @@
-package bts.common;
+package com.bts.common;
 
 import java.util.Arrays;
 import java.util.List;

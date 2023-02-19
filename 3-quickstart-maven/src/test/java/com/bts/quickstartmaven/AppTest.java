@@ -1,4 +1,4 @@
-package bts.quickstartmaven;
+package com.bts.quickstartmaven;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

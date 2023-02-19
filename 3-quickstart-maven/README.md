@@ -1,61 +1,69 @@
-# build of two modules using vanilla java tools
+# build of one module using maven
 
-# 1 - package the out classes as a jar and run it
+# 1 - generate a new project using maven archetype
+go to the directory where to generate new project and execute : 
+`mvn archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4`
+see https://maven.apache.org/archetypes/maven-archetype-quickstart/
 
-Let's try to package the out classes as a jar and run it. We will include the manifest file right now so that java knows which class is the entrypoint of the program.
-`jar cvfm 2-modular-build.jar 2-modular-build/META-INF/MANIFEST.MF -C out/production/2-modular-build .`
-`java -jar 2-modular-build.jar`
+You can also use the integrated intellij feature.
 
-We get the following error : 
-`Exception in thread "main" java.lang.NoClassDefFoundError: bts/common/CommonHelper
-at Main.main(Main.java:5)`
-`
+# 2 - maven rather quickly
 
-it's because we included only out/production/2-modular-build classes in our jar. 
-We need to include the out/production/common classes too. However, we should treat it as a dependency. 
+Maven is a project manager that can do **a lot** of things (some say too much for its own good ... and ours but those are hefty discussions for another time).
+Its behavior is defined by a set of configuration files, the most important of which by far is the `pom.xml` (Project Object Model) at the root of the module.
+The above schema provides a good overview of what it can handle for you : 
 
-## 2 - The not embedded way with classpath
+[![maven](maven-schema.png)](https://www.jrebel.com/blog/maven-cheat-sheet)
 
-First then we have to package a jar for the common module. After compiling it to classes with intellij, we can do that with the following command :
-`jar cvf common.jar -C out/production/common .`
-After running it we should see common.jar has been created.
-Now we have two ways to add it as a dependency to our 2-modular-build.jar.
+see https://www.jrebel.com/blog/maven-cheat-sheet
 
-in our manifest file we can add the following line : `Class-Path: common.jar` (it can be several filepaths space separated)
+For performance purposes and so you don’t download the internet every time you invoke Maven commands, Maven caches everything that it downloads in a local repository. 
+Think of it as a cache, if something is not yet in the local repository, but is required to execute a command, Maven checks the remote repositories.
 
-then repackage the jar and running it will work. However, we must never change relative path of common.jar respective to 2-modular-build.jar.
-This would cause the runtime ClassLoader not to find it and produce again the NoClassDefFoundError we got before.
+The local repository typically resides in the ~/.m2 directory. This directory also stores the Maven configuration in the form of the settings.xml file. You can use it to configure the remote repositories, credentials to access them, and so on.
 
-For this reason it can be better to embed the dependency in the jar with the following method.
+# 3 - maven commands
 
-## 3 - The embedded way
+| Command  |                                                                      Description |     plugin     |
+|----------|---------------------------------------------------------------------------------:|:--------------:|
+| clean    |                                                          Delete target directory |                |
+| validate |                                               Validate if the project is correct |                |
+| test     |                                                                        Run tests |    surefire    |
+| package  | Take the compiled code and package it in its distributable format, e.g. JAR, WAR | compiler & jar |
+| verify   |     Run any checks to verify the MVN package is valid and meets quality criteria |                |
+| install  |                                    Install the package into the local repository |                |
+| deploy   |                            Copies the final MVN package to the remote repository |                |
 
-remove the `Class-Path` line from the manifest file and repackage it. the Class-Path default value being . which is the directory specified by -C option (out/production/common) in the above.
+# 4 - building and packaging 
 
-After packaging let's use `jar tf 2-modular-build.jar` to see the content of the jar. We get :
-`META-INF/
-META-INF/MANIFEST.MF
-bts/
-bts/modularbuild/
-bts/modularbuild/Main.class
-`
+Your current directory need to be the root of the maven module you want to build.
 
-Now update it with the command : 
-`jar uf 2-modular-build.jar -C out/production/common .`
-We can check the content with `jar tf 2-modular-build.jar` to ensure update was successful. We should now get :
-`META-INF/
-META-INF/MANIFEST.MF
-bts/
-bts/modularbuild/
-bts/modularbuild/Main.class
-bts/common/
-bts/common/CommonHelper.class`
+Then we can let maven handle the build (which is now targeted to /target of the module) and the packaging (which is now targeted to /target of the module) :
+`mvn clean package`
+this cleans (eg deletes the /target directory), and `package` builds and package the project.
 
-Creating and updating the jar was a good way to learn but it much more efficient to embed dependencies at jar creation with this command :
-`jar cvfm 2-modular-build.jar 2-modular-build/META-INF/MANIFEST.MF -C out/production/2-modular-build . -C out/production/common .`
+Notice in the pom the lines : 
+`<manifest>
+<addClasspath>true</addClasspath>
+<mainClass>quickstartmaven.com.bts.App</mainClass>
+</manifest>`
+Those replace the manifest files, in fact maven-jar-plugin writes a manifest from it and puts it in the jar.
 
-*According to use cases you may want to use either the not embedded way, particularly if a dependency module is widely used, or the embedded way !*
+Notice also how the version `<version>1.0-SNAPSHOT</version>` suffixes the name of the created jar.
 
-## 4 - more about manifest files
-- https://docs.oracle.com/javase/tutorial/deployment/jar/index.html
-- https://www.baeldung.com/java-jar-manifest
+Now you can test running this jar with : `java -jar target/3-quickstart-maven-1.0-SNAPSHOT.jar`
+
+# 5 - Using profiles
+see https://maven.apache.org/guides/introduction/introduction-to-profiles.html
+
+According to need we want to package our module using App2 as entrypoint instead of App.
+We can do that by using a profile that will use App2 as entrypoint. see the end of the pom.xml file.
+
+Then we can build and package the project using the profile app2 : `mvn clean package -Papp2`
+
+The test run now displays : `Hello World 2!`
+
+
+
+
+

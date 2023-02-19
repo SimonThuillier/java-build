@@ -9,10 +9,10 @@ If we package the app using the startPom.xml we get the following error :
 [ERROR]   symbol:   variable CommonHelper`
 
 We try to compile without including the common package as a dependency. 
-Indeed maven checks completude of dependencies before compiling to prevent runtime errors. 
+Indeed, maven checks completude of dependencies before compiling to prevent runtime errors. 
 
 If the dependency is also a maven handled module we should use the dependency mechanism.
-However here common is not. So how can we do ? 
+However, here common is not. So how can we do ? 
 
 see https://maven.apache.org/guides/mini/guide-3rd-party-jars-local.html
 The trick is to use the maven-install-plugin that will guess a maven module from the jar we want to use, then use it as a dependency. 
